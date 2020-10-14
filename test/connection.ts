@@ -101,7 +101,7 @@ describe("connection", function () {
       foo.on("connect", () => {
         foo.close();
         socket.close();
-        manager.close();
+        manager._close();
         done();
       });
     });
@@ -118,7 +118,7 @@ describe("connection", function () {
         const foo = manager.socket("/foo");
         foo.on("connect", () => {
           foo.disconnect();
-          manager.close();
+          manager._close();
           done();
         });
       });
@@ -187,7 +187,7 @@ describe("connection", function () {
       manager.on("reconnect_failed", () => {
         expect(reconnects).to.be(2);
         socket.close();
-        manager.close();
+        manager._close();
         done();
       });
       socket.connect();
@@ -225,7 +225,7 @@ describe("connection", function () {
       expect(reconnects).to.be(3);
       expect(increasingDelay).to.be.ok();
       socket.close();
-      manager.close();
+      manager._close();
       done();
     });
   });
@@ -294,7 +294,7 @@ describe("connection", function () {
       socket2.on("connect", () => {
         setTimeout(() => {
           socket2.disconnect();
-          manager.disconnect();
+          manager._close();
           done();
         }, 500);
       });
@@ -324,7 +324,7 @@ describe("connection", function () {
     manager.on("reconnect_failed", () => {
       expect(reconnects).to.be(2);
       socket.close();
-      manager.close();
+      manager._close();
       done();
     });
 
@@ -350,7 +350,7 @@ describe("connection", function () {
     manager.on("reconnect_failed", () => {
       expect(reconnects).to.be(2);
       socket.close();
-      manager.close();
+      manager._close();
       done();
     });
   });
@@ -374,7 +374,7 @@ describe("connection", function () {
     manager.on("reconnect_failed", () => {
       expect(reconnects).to.be(2);
       socket.close();
-      manager.close();
+      manager._close();
       done();
     });
   });
@@ -395,7 +395,7 @@ describe("connection", function () {
       // set a timeout to let reconnection possibly fire
       setTimeout(() => {
         socket.close();
-        manager.close();
+        manager._close();
         done();
       }, 1000);
     });
@@ -431,7 +431,7 @@ describe("connection", function () {
       manager.on("reconnect_failed", () => {
         expect(reconnects).to.be(2);
         socket.disconnect();
-        manager.close();
+        manager._close();
         done();
       });
     });
@@ -450,7 +450,7 @@ describe("connection", function () {
         // set a timeout to let reconnection possibly fire
         setTimeout(() => {
           socket.disconnect();
-          manager.close();
+          manager._close();
           done();
         }, 1000);
       });
@@ -463,7 +463,6 @@ describe("connection", function () {
         reconnection: true,
         reconnectionAttempts: 2,
       });
-      // @ts-ignore
       let delay = Math.floor(
         manager.reconnectionDelay() * manager.randomizationFactor() * 0.5
       );
@@ -479,7 +478,7 @@ describe("connection", function () {
       manager.on("reconnect_failed", () => {
         expect(reconnects).to.be(2);
         socket.disconnect();
-        manager.close();
+        manager._close();
         done();
       });
 
