@@ -1,12 +1,19 @@
 import { PacketType } from "socket.io-parser";
-import Emitter from "component-emitter";
-import toArray from "to-array";
+import * as Emitter from "component-emitter";
+import * as toArray from "to-array";
 import { on } from "./on";
-import bind from "component-bind";
-import hasBin from "has-binary2";
+import * as bind from "component-bind";
+import * as hasBin from "has-binary2";
 import { Manager } from "./manager";
 
 const debug = require("debug")("socket.io-client:socket");
+
+export interface SocketOptions {
+  /**
+   * the authentication payload sent when connecting to the Namespace
+   */
+  auth: object | ((cb: (data: object) => void) => void);
+}
 
 /**
  * Internal events.
@@ -47,7 +54,7 @@ export class Socket extends Emitter {
    *
    * @api public
    */
-  constructor(io, nsp, opts) {
+  constructor(io: Manager, nsp: string, opts?: Partial<SocketOptions>) {
     super();
     this.io = io;
     this.nsp = nsp;
@@ -124,12 +131,12 @@ export class Socket extends Emitter {
    * @return {Socket} self
    * @api public
    */
-  emit(ev) {
+  public emit(ev: string, ...args: any[]) {
     if (RESERVED_EVENTS.hasOwnProperty(ev)) {
       throw new Error('"' + ev + '" is a reserved event name');
     }
 
-    const args = toArray(arguments);
+    args.unshift(ev);
     const packet: any = {
       type: (this.flags.binary !== undefined ? this.flags.binary : hasBin(args))
         ? PacketType.BINARY_EVENT

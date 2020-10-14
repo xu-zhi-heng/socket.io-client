@@ -1,6 +1,6 @@
 import { url } from "./url";
-import { Manager } from "./manager";
-import { Socket } from "./socket";
+import { Manager, ManagerOptions } from "./manager";
+import { Socket, SocketOptions } from "./socket";
 
 const debug = require("debug")("socket.io-client");
 
@@ -27,8 +27,12 @@ const cache = (exports.managers = {});
  *
  * @api public
  */
-
-function lookup(uri, opts): Socket {
+function lookup(opts?: Partial<ManagerOptions | SocketOptions>): Socket;
+function lookup(
+  uri: string,
+  opts?: Partial<ManagerOptions | SocketOptions>
+): Socket;
+function lookup(uri: any, opts?: any): Socket {
   if (typeof uri === "object") {
     opts = uri;
     uri = undefined;
@@ -90,3 +94,4 @@ exports.connect = lookup;
 
 export { Manager } from "./manager";
 export { Socket } from "./socket";
+export default lookup;

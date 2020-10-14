@@ -2,11 +2,23 @@
 
 var browsers = require('socket.io-browsers');
 
+const webpackConfig = require('./support/prod.config.js');
+
+webpackConfig.module.rules = [
+  ...webpackConfig.module.rules,
+  {
+    test: /\.tsx?$/,
+    use: 'ts-loader',
+    exclude: /node_modules/
+  }
+];
+
 var zuulConfig = module.exports = {
   ui: 'mocha-bdd',
 
   // test on localhost by default
   local: true,
+  open: true,
 
   concurrency: 2, // ngrok only accepts two tunnels by default
   // if browser does not sends output in 120s since last output:
@@ -18,7 +30,7 @@ var zuulConfig = module.exports = {
 
   server: './test/support/server.js',
   builder: 'zuul-builder-webpack',
-  webpack: require('./support/prod.config.js')
+  webpack: webpackConfig
 };
 
 if (process.env.CI === 'true') {

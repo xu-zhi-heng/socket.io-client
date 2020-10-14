@@ -1,4 +1,4 @@
-const loc = {};
+const loc: any = {};
 const { url } = require("../build/url");
 const expect = require("expect.js");
 
